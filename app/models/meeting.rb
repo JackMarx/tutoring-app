@@ -45,4 +45,24 @@ class Meeting < ApplicationRecord
   def self.available_time_slots
     ["5:15 - 5:45", "4:45 - 5:15", "4:15 - 4:45", "After Class", "Discuss with Instructor"]
   end
+
+  def email_teachers_available
+    if date.sunday?
+      available_teachers = ["Jim", "Dan", "Joy", "Ben"]
+    elsif date.monday?
+      available_teachers = ["Dan", "Joy"]
+    elsif date.tuesday?
+      available_teachers = ["Joy", "Ben"]
+    elsif date.wednesday?
+      available_teachers = ["Dan", "Evan"]
+    elsif date.thursday?
+      available_teachers = ["Dan", "Evan"]
+    else
+      available_teachers = ["Jim", "Dan", "Joy", "Ben", "Evan"]
+    end
+    available_teachers.each do |teacher_name|
+      RequiredMailer.ping_teacher_email(User.find_by(name: teacher_name, student: false),self).deliver_now 
+    end
+    true
+  end
 end

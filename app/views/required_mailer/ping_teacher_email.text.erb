@@ -1,0 +1,9 @@
+Hi <%= @teacher.name %>,
+
+Reqeusted Tutoring
+For: <%= @student.name %>
+Date: <%= @meeting.date.strftime('%A, %B %e ') %>
+Time: <%= @meeting.time_slot == "Discuss with Instructor" ? "Contact student to set up time." : @meeting.time_slot %>
+
+Accept on Tutoring site below
+https://actualize-tutoring.herokuapp.com/

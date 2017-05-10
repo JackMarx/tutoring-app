@@ -1,0 +1,8 @@
+<p>Hi <%= @teacher.name %>,</p>
+
+<p>Reqeusted Tutoring</p>
+<p>For: <%= @student.name %></p>
+<p>Date: <%= @meeting.date.strftime('%A, %B %e ') %></p>
+<p>Time: <%= @meeting.time_slot == "Discuss with Instructor" ? "Contact student to set up time." : @meeting.time_slot %></p>
+
+<p>Accept on time <a href="https://actualize-tutoring.herokuapp.com/">Here</a></p>

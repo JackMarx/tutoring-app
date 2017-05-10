@@ -20,6 +20,7 @@ class MeetingsController < ApplicationController
                       time_slot: params[:time_slot]
                       )
     if meeting.save
+      meeting.email_available_teachers
       flash["success"] = "Time slot request submitted for review"
       redirect_to "/"
     else

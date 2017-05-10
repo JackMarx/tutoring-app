@@ -12,4 +12,11 @@ class RequiredMailer < ApplicationMailer
     @meeting = meeting
     mail(to: student.email, subject: "Tutoring with #{teacher.name}")
   end
+
+  def ping_teacher_email(teacher, meeting)
+    @student = meeting.student
+    @teacher = teacher
+    @meeting = meeting
+    mail(to: teacher.email, subject: "RE: Tutor #{meeting.date.strftime('%a, %b %e')}")
+  end
 end
