@@ -1,0 +1,10 @@
+<h1>Login</h1>
+<%= form_tag "/login", method: :post, class: "well" do %>
+  <div class="well">
+    Email: <input type="email" name="email">
+  </div>
+  <div class="well">
+    Password: <input type="password" name="password">
+  </div>
+  <input class="btn btn-primary" type="submit" value="Log In">
+<% end %>

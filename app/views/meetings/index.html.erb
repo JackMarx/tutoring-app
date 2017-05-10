@@ -1,0 +1,89 @@
+<% if @errors %>
+  <% @errors.each do |error| %>
+    <div class="alert alert-danger alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <strong>Warning!</strong> <%= error %>
+    </div>
+  <% end %>
+<% end %>
+
+<div class="well <%= "red-notice" if current_user.student? && current_user.required %>">
+  <% if current_user.student? %>
+    <h3>New Meeting <%= "- You must attend a tutoring session" if current_user.required %></h3>
+    <%= form_tag "/meetings", method: :post, class: "form-inline" do %>
+      <div class="form-group">
+        <select name="date">
+          <% @available_dates.each do |day| %>
+            <option <%= 'selected="selected"' if eval("(@time_now + 1.day).#{day.downcase}?") %> value="<%= day %>"><%= day %></option>
+          <% end %>
+        </select>
+      </div>
+      <div class="form-group">
+        <select name="time_slot">
+          <% @available_times.each do |time| %>
+            <option <%= 'selected="selected"' if ((@time_now.friday? || @time_now.thursday?) && time == "Discuss with Instructor") || (@time_now.saturday? && time == "After Class")%> value="<%= time %>"><%= time %></option>
+          <% end %>
+        </select>
+      </div>
+      <input class="btn btn-primary" type="submit" value="Request Time">
+    <% end %>
+  <% else %>
+    <h3>Students that are required to schedule tutoring session.</h3>
+    <%= form_tag "/required", method: :patch do %>
+      <% @students.each_slice(4).each do |student_slice| %>
+        <div class="row">
+          <% student_slice.each do |student| %>
+            <div class="col-xs-3 has-<%= student.required ? "error" : "success" %>">
+              <div class="checkbox">
+                <label>
+                  <%= check_box_tag student.name, true, student.required %>
+                  <%= "#{student.name} #{'*' if student.required}" %>
+                </label>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+      <input class="btn btn-primary right-button" type="submit" value="update">
+    <% end %>
+  <% end %>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="well">
+      <h1>Meetings Requested</h1>
+
+      <ul>
+        <% @meetings_suggested.each do |date, meetings| %>
+          <h3><%= date.strftime('%A') %></h3>
+          <% meetings.sort_by{ |m| m.time_slot }.each do |meeting| %>
+            <% if current_user.teacher? %>
+              <li><%= link_to "#{ meeting.time_slot} - #{ meeting.student.name }", "/meetings/#{meeting.id}/teachers/#{current_user.id}", method: :patch %></li>
+            <% else %>
+              <li><%= meeting.time_slot %> - <%= meeting.student.name %></li>
+            <% end %>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="well">
+      <h1>Meetings Scheduled</h1>
+
+      <ul>
+        <% @meetings_scheduled.each do |date, meetings| %>
+          <h3><%= date.strftime('%A') %></h3>
+          <% meetings.sort_by{ |m| m.time_slot }.each do |meeting| %>
+            <% if current_user.student? %>
+              <li><%= meeting.time_slot %> - <%= meeting.student.name %>, <%= meeting.teacher.name %></li>
+            <% else %>
+              <li><a href="/meetings/<%= meeting.id %>/edit"><%= meeting.time_slot %> - <%= meeting.student.name %>, <%= meeting.teacher.name %></a></li>
+            <% end %>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>
