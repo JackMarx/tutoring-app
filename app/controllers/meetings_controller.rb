@@ -20,7 +20,23 @@ class MeetingsController < ApplicationController
                       time_slot: params[:time_slot]
                       )
     if meeting.save
-      meeting.email_available_teachers
+      if params[:date] == "Sunday"
+        available_teachers = ["Josh", "Dan", "Joy", "Ben"]
+      elsif params[:date] == "Monday"
+        available_teachers = ["Josh", "Dan", "Joy"]
+      elsif params[:date] == "Tuesday"
+        available_teachers = ["Josh", "Joy", "Ben"]
+      elsif params[:date] == "Wednesday"
+        available_teachers = ["Josh", "Dan", "Evan"]
+      elsif params[:date] == "Thursday"
+        available_teachers = ["Josh", "Dan", "Evan"]
+      else
+        available_teachers = ["Josh", "Dan", "Joy", "Ben", "Evan"]
+      end
+      available_teachers.each do |teacher_name|
+        RequiredMailer.ping_teacher_email(User.find_by(name: teacher_name, student: false), meeting).deliver_now 
+      end
+
       flash["success"] = "Time slot request submitted for review"
       redirect_to "/"
     else
@@ -77,5 +93,12 @@ class MeetingsController < ApplicationController
       student.update(required: params[student.name])
     end
     redirect_to "/"
+  end
+
+  def destroy
+    meeting = Meeting.find(params[:id])
+    meeting.destroy
+    flash[:success] = "Meeting deleted"
+    redirect_to '/'
   end
 end

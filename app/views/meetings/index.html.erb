@@ -61,7 +61,7 @@
             <% if current_user.teacher? %>
               <li><%= link_to "#{ meeting.time_slot} - #{ meeting.student.name }", "/meetings/#{meeting.id}/teachers/#{current_user.id}", method: :patch %></li>
             <% else %>
-              <li><%= meeting.time_slot %> - <%= meeting.student.name %></li>
+              <li><%= meeting.time_slot %> - <%= meeting.student.name %> <%= link_to "Delete", "/meetings/#{meeting.id}", method: :delete %></li>
             <% end %>
           <% end %>
         <% end %>

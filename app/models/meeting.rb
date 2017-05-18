@@ -31,11 +31,11 @@ class Meeting < ApplicationRecord
   validates_with MyValidator, on: :create
 
   def self.suggested_grouped
-    where(suggested: true).includes(:student).order(:date).select { |meeting| meeting.date > Date.today }.group_by(&:date)
+    where(suggested: true).includes(:student).order(:date).select { |meeting| meeting.date >= Date.today }.group_by(&:date)
   end
 
   def self.scheduled_grouped
-    where(suggested: false).includes(:student).order(:date).order(:date).select { |meeting| meeting.date > Date.today }.group_by(&:date)
+    where(suggested: false).includes(:student).order(:date).order(:date).select { |meeting| meeting.date >= Date.today }.group_by(&:date)
   end
 
   def self.available_dates

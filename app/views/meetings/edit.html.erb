@@ -38,3 +38,5 @@
   </div>
   <input type="submit" value="Update Meeting" class="btn btn-primary">
 <% end %>
+
+<%= link_to "Delete Meeting", "/meetings/#{@meeting.id}", method: :delete, class: "btn btn-danger" %>
