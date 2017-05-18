@@ -56,7 +56,7 @@
 
       <ul>
         <% @meetings_suggested.each do |date, meetings| %>
-          <h3><%= date.strftime('%A') %></h3>
+          <h3><%= date.toady? ? "Today" : date.strftime('%A') %></h3>
           <% meetings.sort_by{ |m| m.time_slot }.each do |meeting| %>
             <% if current_user.teacher? %>
               <li><%= link_to "#{ meeting.time_slot} - #{ meeting.student.name }", "/meetings/#{meeting.id}/teachers/#{current_user.id}", method: :patch %></li>
@@ -74,7 +74,7 @@
 
       <ul>
         <% @meetings_scheduled.each do |date, meetings| %>
-          <h3><%= date.strftime('%A') %></h3>
+          <h3><%= date.toady? ? "Today" : date.strftime('%A') %></h3>
           <% meetings.sort_by{ |m| m.time_slot }.each do |meeting| %>
             <% if current_user.student? %>
               <li><%= meeting.time_slot %> - <%= meeting.student.name %>, <%= meeting.teacher.name %></li>
